@@ -3,14 +3,16 @@ const details = document.querySelector('.details');
 const card = document.querySelector('.card');
 const time = document.querySelector('img.time');
 const icon = document.querySelector('.icon img');
+const forecast = new Forecast();
+
+
+// console.log(forecast);
 
 const updateUI = (data) => {
 
   const cityDets = data.cityDets;
   const weather = data.weather;
 
-  // console.log(cityDets);
-  // console.log(weather);
 
   details.innerHTML = `
       <h5 class="my-3">${cityDets.LocalizedName}</h5>
@@ -36,20 +38,6 @@ const updateUI = (data) => {
 }
 
 
-const updateCity = async (city) => {
-
-  const cityDets = await getCity(city);
-  const weather = await getWeather(cityDets.Key);
-
-  return {
-    cityDets,
-    weather
-  }
-  
-}
-
-
-
 cityForm.addEventListener('submit', e => {
 
   // Prevent default action
@@ -58,16 +46,35 @@ cityForm.addEventListener('submit', e => {
   // push input from the input field
 
   const city = cityForm.city.value.trim();
-  updateCity(city)
+  cityForm.reset();
+
+  forecast.updateCity(city)
         .then(data => updateUI(data))
         .catch(err => console.log(err))
-  
-  cityForm.reset();
+
+        localStorage.setItem('city', city);
 })
 
+if(localStorage.getItem('city')){
+  forecast.updateCity(localStorage.getItem('city'))
+    .then(data => updateUI(data))
+    .catch(err => console.log(err))
+}
 
-localStorage.setItem('name', 'Yonas');
+// localStorage.setItem('name', 'Yonas');
 
-const name = localStorage.getItem('name');
+// const name = localStorage.getItem('name');
 
-console.log(name);
+// console.log(name);
+
+// const updateCity = async (city) => {
+
+//   const cityDets = await getCity(city);
+//   const weather = await getWeather(cityDets.Key);
+
+//   return {
+//     cityDets,
+//     weather
+//   }
+  
+// }
